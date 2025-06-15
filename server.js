@@ -25,12 +25,13 @@ app.post('/register', (req, res) => {
 // Отправка результата
 app.post('/score', (req, res) => {
     const { nickname, score } = req.body;
-    if (!nickname || typeof score !== 'string' && typeof score !== 'number') {
+    if (!nickname || (typeof score !== 'number' && typeof score !== 'string')) {
         return res.status(400).json({ error: 'Invalid data' });
     }
     const user = data.users.find(u => u.nickname === nickname);
     if (!user) return res.status(404).json({ error: 'User not found' });
-    if (score > user.score) user.score = score;
+    const numericScore = typeof score === 'string' ? parseInt(score, 10) : score;
+    if (numericScore > user.score) user.score = numericScore;
     res.json({ success: true });
 });
 
